@@ -1,4 +1,4 @@
-# Stock package version: docomo/SO-51A/SO-51A:12/58.2.B.0.520/058002B000052002813269650:user/release-keys
+# Stock package version: SO-51A/SO-51A:12/58.2.B.0.520/058002B000052002813269650:user/release-keys
 
 # NFC
 vendor/etc/libese-nxp.conf
