@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023 The LineageOS Project
+# Copyright (C) 2018 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,29 +14,30 @@
 # limitations under the License.
 #
 
-# Inherit from those products. Most specific first.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+# Inherit from sony sm8250-common
+-include device/sony/sm8250-common/BoardConfigCommon.mk
 
-# Inherit from device.mk
-$(call inherit-product, $(LOCAL_PATH)/device.mk)
+DEVICE_PATH := device/sony/pdx203
 
-# Inherit some common Lineage stuff.
-$(call inherit-product, vendor/lineage/config/common_full_phone.mk)
+# Display
+TARGET_SCREEN_DENSITY := 420
 
-IS_PHONE := true
+BOARD_KERNEL_CMDLINE += buildproduct=pdx203
 
-PRODUCT_NAME := lineage_pdx203
-PRODUCT_DEVICE := pdx203
-PRODUCT_MANUFACTURER := Sony
-PRODUCT_BRAND := Sony
-PRODUCT_MODEL := SO-51A
+TARGET_KERNEL_SOURCE := kernel/sony/sm8250
+TARGET_KERNEL_CONFIG := pdx203_defconfig
 
-PRODUCT_GMS_CLIENTID_BASE := android-sonymobile
+BOARD_MKBOOTIMG_ARGS += --base $(BOARD_KERNEL_BASE)
+BOARD_MKBOOTIMG_ARGS += --pagesize $(BOARD_KERNEL_PAGESIZE)
+BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --kernel_offset $(BOARD_KERNEL_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --second_offset $(BOARD_KERNEL_SECOND_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 
-PRODUCT_BUILD_PROP_OVERRIDES += \
-    TARGET_DEVICE=SO-51A \
-    TARGET_PRODUCT=SO-51A \
-    PRIVATE_BUILD_DESC="SO-51A-user 12 58.2.B.0.520 058002B000052002813269650 release-keys"
+# Props
+TARGET_VENDOR_PROP += $(DEVICE_PATH)/vendor.prop
 
-BUILD_FINGERPRINT := docomo/SO-51A/SO-51A:12/58.2.B.0.520/058002B000052002813269650:user/release-keys
+# inherit from the proprietary version
+-include vendor/sony/pdx203/BoardConfigVendor.mk
