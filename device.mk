@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023 The LineageOS Project
+# Copyright (C) 2018 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,29 +14,44 @@
 # limitations under the License.
 #
 
-# Inherit from those products. Most specific first.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+#
+# This file sets variables that control the way modules are built
+# thorughout the system. It should not be used to conditionally
+# disable makefiles (the proper mechanism to control what gets
+# included in a build is to use PRODUCT_PACKAGES in a product
+# definition file).
+#
 
-# Inherit from device.mk
-$(call inherit-product, $(LOCAL_PATH)/device.mk)
+# Inherit from sony sm8250-common
+$(call inherit-product, device/sony/sm8250-common/edo.mk)
 
-# Inherit some common Lineage stuff.
-$(call inherit-product, vendor/lineage/config/common_full_phone.mk)
+# Boot animation
+TARGET_SCREEN_HEIGHT := 2560
+TARGET_SCREEN_WIDTH := 1440
 
-IS_PHONE := true
+# Device uses high-density artwork where available
+PRODUCT_AAPT_CONFIG := normal
+PRODUCT_AAPT_PREF_CONFIG := xxxhdpi
 
-PRODUCT_NAME := lineage_pdx203
-PRODUCT_DEVICE := pdx203
-PRODUCT_MANUFACTURER := Sony
-PRODUCT_BRAND := Sony
-PRODUCT_MODEL := SO-51A
+PRODUCT_PACKAGES += \
+    android.hidl.base@1.0 \
+    android.hidl.manager@1.0
 
-PRODUCT_GMS_CLIENTID_BASE := android-sonymobile
+# Overlays
+DEVICE_PACKAGE_OVERLAYS += \
+    $(LOCAL_PATH)/overlay-lineage
 
-PRODUCT_BUILD_PROP_OVERRIDES += \
-    TARGET_DEVICE=SO-51A \
-    TARGET_PRODUCT=SO-51A \
-    PRIVATE_BUILD_DESC="SO-51A-user 12 58.2.B.0.520 058002B000052002813269650 release-keys"
+PRODUCT_PACKAGES += \
+    SonyPDX203SystemUIRes \
+    SonyPDX203FrameworksRes
 
-BUILD_FINGERPRINT := docomo/SO-51A/SO-51A:12/58.2.B.0.520/058002B000052002813269650:user/release-keys
+# HDR
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/libhdr_somc.xml:$(TARGET_COPY_OUT_VENDOR)/etc/libhdr_somc.xml
+
+# Soong namespaces
+PRODUCT_SOONG_NAMESPACES += \
+    $(LOCAL_PATH)
+
+# Inherit from vendor blobs
+$(call inherit-product, vendor/sony/pdx203/pdx203-vendor.mk)
